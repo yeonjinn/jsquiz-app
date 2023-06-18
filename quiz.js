@@ -19,96 +19,98 @@ function Run(){
     check.style.display="none"
     failquiz.style.display="none"
 
-    
-
-    function Quiz(index){
-
-        number.innerText=(index+1)+'.';             //문제 번호 출력
-        const json_Quiz=data[index]; 
-
-        Question.innerText=json_Quiz["question"];   //문제 출력
-        
-        //객관식 선택
-        const choiceTag = `
-            <p>
-                <label for="select1">
-                    <input type="radio" id="select1" name="select" value="0" >
-                    <span class="choice">${json_Quiz.answers[0]}</span>
-                </label>
-            </p>
-            <p>
-                <label for="select2">
-                    <input type="radio" id="select2" name="select" value="1" >
-                    <span class="choice">${json_Quiz.answers[1]}</span>
-                </label>
-            </p>
-            <p>
-                <label for="select3">
-                    <input type="radio" id="select3" name="select" value="2" >
-                    <span class="choice">${json_Quiz.answers[2]}</span>
-                </label>    
-            </p>
-            <p>
-                <label for="select4">
-                    <input type="radio" id="select4" name="select" value="3" >
-                    <span class="choice">${json_Quiz.answers[3]}</span>
-                </label>
-            </p>
-        `;
-        Selects.innerHTML=choiceTag;
-
-
-    }
     Quiz(index);
-
-    //정답 확인
-    function checkAnswer() {
-        const selectedAnswer = document.querySelector('input[name="select"]:checked');
-        
-        if(!selectedAnswer){
-            return;
-        }
-
-        const selectedAnswerIndex=parseInt(selectedAnswer.value);
-        const currentQuiestion=data[index];
-
-        if(selectedAnswerIndex===currentQuiestion.correct){
-            score++;
-        }else{
-            Fail.push(index);
-        }
-
-        index++;
-
-        if(index<data.length){
-            Quiz(index);
-        }else{
-            Next.style.display="none"
-            check.style.display="block"            
-        }
-        return selectedAnswer;
-    }
-
-    function showResult(){
-        number.innerText='';
-        Question.innerText='';
-        Selects.innerText='';
-
-        const totalQuestions=data.length;
-        const percentage=(score/totalQuestions)*100;
-
-        scoreElement.innerText=percentage+' 점!';
-
-        
-    }
 
     Next.addEventListener('click', checkAnswer);
 
     check.addEventListener('click',showResult);
 
+    //failquiz.addEventListener('click',FailQuestion);
+
 
 }
 
+function Quiz(index){
+
+    number.innerText=(index+1)+'.';             //문제 번호 출력
+    const json_Quiz=data[index]; 
+
+    Question.innerText=json_Quiz["question"];   //문제 출력
+    
+    //객관식 선택
+    const choiceTag = `
+        <p>
+            <label for="select1">
+                <input type="radio" id="select1" name="select" value="0" >
+                <span class="choice">${json_Quiz.answers[0]}</span>
+            </label>
+        </p>
+        <p>
+            <label for="select2">
+                <input type="radio" id="select2" name="select" value="1" >
+                <span class="choice">${json_Quiz.answers[1]}</span>
+            </label>
+        </p>
+        <p>
+            <label for="select3">
+                <input type="radio" id="select3" name="select" value="2" >
+                <span class="choice">${json_Quiz.answers[2]}</span>
+            </label>    
+        </p>
+        <p>
+            <label for="select4">
+                <input type="radio" id="select4" name="select" value="3" >
+                <span class="choice">${json_Quiz.answers[3]}</span>
+            </label>
+        </p>
+    `;
+    Selects.innerHTML=choiceTag;
+
+
+}
+
+
+    //정답 확인
+function checkAnswer() {
+    const selectedAnswer = document.querySelector('input[name="select"]:checked');
+    
+    if(!selectedAnswer){
+        return;
+    }
+
+    const selectedAnswerIndex=parseInt(selectedAnswer.value);
+    const currentQuiestion=data[index];
+
+    if(selectedAnswerIndex===currentQuiestion.correct){
+        score++;
+    }else{
+        Fail.push(index);
+    }
+
+    index++;
+
+    if(index<data.length){
+        Quiz(index);
+    }else{
+        Next.style.display="none"
+        check.style.display="block"            
+    }
+    return selectedAnswer;
+}
+
+function showResult(){
+    number.innerText='';
+    Question.innerText='';
+    Selects.innerText='';
+    failquiz.style.display="block"
+
+    const totalQuestions=data.length;
+    const percentage=(score/totalQuestions)*10;
+
+    scoreElement.innerText=percentage+' 점!';
+
+    
+}
 
 
 fetch("./exam.json")
